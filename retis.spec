@@ -31,9 +31,9 @@ The project is currently EXPERIMENTAL.
 
 %prep
 %if 0%{?fedora} >= 34
-%autosetup -n %{name}-v%{version}
+%autosetup -n %{name}-%{version}
 %else
-%setup -q -n %{name}-v%{version}
+%setup -q -n %{name}-%{version}
 %endif
 %if 0
 %cargo_prep
@@ -77,3 +77,5 @@ install -m 0644 profiles/* %{buildroot}%{_sysconfdir}/retis/profiles
 %{_sysconfdir}/retis/profiles
 
 %changelog
+* Thu Jun 15 2023 Antoine Tenart <atenart@redhat.com> - 1.0.0-0
+- Initial release.
