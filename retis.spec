@@ -77,7 +77,7 @@ install -m 0644 profiles/* %{buildroot}%{_sysconfdir}/retis/profiles
 %{_sysconfdir}/retis/profiles
 
 %changelog
-* Tue Sep 28 2023 Antoine Tenart <atenart@redhat.com> - 1.2.0-0
+* Thu Sep 28 2023 Antoine Tenart <atenart@redhat.com> - 1.2.0-0
 - Bump to 1.2.0.
 - Performances improvements.
 - Conntrack support.
