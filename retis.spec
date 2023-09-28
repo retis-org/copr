@@ -1,5 +1,5 @@
 Name:		retis
-Version:	1.1.0
+Version:	1.2.0
 Release:	0%{?dist}
 Summary:	Tracing packets in the Linux networking stack, using eBPF and interfacing with control and data paths such as OvS or Netfilter.
 License:	GPLv2
@@ -77,6 +77,14 @@ install -m 0644 profiles/* %{buildroot}%{_sysconfdir}/retis/profiles
 %{_sysconfdir}/retis/profiles
 
 %changelog
+* Tue Sep 28 2023 Antoine Tenart <atenart@redhat.com> - 1.2.0-0
+- Bump to 1.2.0.
+- Performances improvements.
+- Conntrack support.
+- ARP support in the skb collector.
+- New actions in the OvS collector.
+- Bug fixes.
+
 * Tue Jul 25 2023 Antoine Tenart <atenart@redhat.com> - 1.1.0-0
 - Bump to 1.1.0: better CoreOS & container environments support.
 
