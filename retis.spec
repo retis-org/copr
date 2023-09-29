@@ -42,8 +42,8 @@ The project is currently EXPERIMENTAL.
 %{__mkdir} -p .cargo
 cat > .cargo/config << EOF
 [build]
-rustc = "%{__rustc}"
-rustdoc = "%{__rustdoc}"
+rustc = "$HOME/.cargo/bin/rustc"
+rustdoc = "$HOME/.cargo/bin/rustdoc"
 
 [env]
 CFLAGS = "%{build_cflags}"
