@@ -27,8 +27,6 @@ BuildRequires:	zlib-devel
 %description
 Tracing packets in the Linux networking stack, using eBPF and interfacing with control and data paths such as OpenVSwitch.
 
-The project is currently EXPERIMENTAL.
-
 %prep
 %if 0%{?fedora} >= 34
 %autosetup -n %{name}-%{version}
