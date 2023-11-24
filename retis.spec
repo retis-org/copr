@@ -43,12 +43,21 @@ cat > .cargo/config << EOF
 rustc = "$HOME/.cargo/bin/rustc"
 rustdoc = "$HOME/.cargo/bin/rustdoc"
 
+%if 0%{?fedora}
+[profile.rpm]
+inherits = "release"
+opt-level = %{rustflags_opt_level}
+codegen-units = %{rustflags_codegen_units}
+debug = %{rustflags_debuginfo}
+strip = "none"
+%else
 [profile.rpm]
 inherits = "release"
 opt-level = "%{rustflags_opt_level}"
 codegen-units = "%{rustflags_codegen_units}"
 debug = "%{rustflags_debuginfo}"
 strip = "none"
+%endif
 
 [env]
 CFLAGS = "%{build_cflags}"
