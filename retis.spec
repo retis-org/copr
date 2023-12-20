@@ -1,5 +1,5 @@
 Name:		retis
-Version:	1.2.1
+Version:	1.3.0
 Release:	0%{?dist}
 Summary:	Tracing packets in the Linux networking stack, using eBPF and interfacing with control and data paths such as OvS or Netfilter.
 License:	GPLv2
@@ -96,6 +96,17 @@ install -m 0644 profiles/* %{buildroot}%{_sysconfdir}/retis/profiles
 %{_sysconfdir}/retis/profiles
 
 %changelog
+* Wed Dec 20 2023 Antoine Tenart <atenart@redhat.com> - 1.3.0-0
+- Bump to 1.3.0.
+- Pcap post-processing command.
+- Meta filtering support.
+- L3 filtering support.
+- Wildcard support for all probe types (was kprobe-only).
+- Pager support in post-processing commands.
+- Non-core drop reasons support.
+- Improved logging.
+- Mulitple improvements & fixes.
+
 * Fri Nov 24 2023 Antoine Tenart <atenart@redhat.com> - 1.2.1-0
 - Bump to 1.2.0.
 - Multiple OvS related bug fixes.
