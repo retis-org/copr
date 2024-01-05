@@ -5,7 +5,7 @@ Summary:	Tracing packets in the Linux networking stack, using eBPF and interfaci
 License:	GPLv2
 
 URL:		https://github.com/retis-org/retis
-Source:		https://github.com/retis-org/retis/archive/v%{version}/%{name}-%{version}.tar.gz
+Source:		https://github.com/retis-org/retis/archive/at/copr-test-build.tar.gz
 
 %if 0%{?fedora} >= 34
 BuildRequires:	rust-packaging
@@ -29,9 +29,9 @@ Tracing packets in the Linux networking stack, using eBPF and interfacing with c
 
 %prep
 %if 0%{?fedora} >= 34
-%autosetup -n %{name}-%{version}
+%autosetup -n retis-at-copr-test-build
 %else
-%setup -q -n %{name}-%{version}
+%setup -q -n retis-at-copr-test-build
 %endif
 %if 0
 %cargo_prep
