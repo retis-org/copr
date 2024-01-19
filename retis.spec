@@ -74,10 +74,18 @@ RUSTUP_INIT_SKIP_PATH_CHECK=y curl --proto '=https' --tlsv1.2 -sSf https://sh.ru
 %endif
 
 %build
+%if 0%{?fedora}
 %cargo_build
+%else
+/usr/bin/env CARGO_HOME=.cargo /usr/bin/cargo build --release %{?_smp_mflags}
+%endif
 
 %install
+%if 0%{?fedora}
 %cargo_install
+%else
+/usr/bin/env CARGO_HOME=.cargo /usr/bin/cargo install %{?_smp_mflags} --no-track --path .
+%endif
 install -m 0755 -d %{buildroot}%{_sysconfdir}/retis/profiles
 install -m 0644 profiles/* %{buildroot}%{_sysconfdir}/retis/profiles
 
