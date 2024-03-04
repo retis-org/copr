@@ -1,5 +1,5 @@
 Name:		retis
-Version:	1.3.1
+Version:	1.3.2
 Release:	0%{?dist}
 Summary:	Tracing packets in the Linux networking stack, using eBPF and interfacing with control and data paths such as OvS or Netfilter.
 License:	GPLv2
@@ -104,6 +104,11 @@ install -m 0644 profiles/* %{buildroot}%{_sysconfdir}/retis/profiles
 %{_sysconfdir}/retis/profiles
 
 %changelog
+* Mon Mar 04 2024 Antoine Tenart <atenart@redhat.com> - 1.3.2-0
+- Bump to 1.3.1.
+- Wait for all probes to be installed before starting the collection.
+- Update btf-rs to 1.1.
+
 * Fri Jan 19 2024 Antoine Tenart <atenart@redhat.com> - 1.3.1-0
 - Bump to 1.3.1.
 - Improved symbols validation.
