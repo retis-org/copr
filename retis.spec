@@ -5,22 +5,24 @@ Summary:	Tracing packets in the Linux networking stack, using eBPF and interfaci
 License:	GPLv2
 
 URL:		https://github.com/retis-org/retis
-Source:		https://github.com/retis-org/retis/archive/v%{version}/%{name}-%{version}.tar.gz
+Source:		https://github.com/retis-org/retis/archive/main.tar.gz
 
 %if 0%{?fedora} >= 34
 BuildRequires:	rust-packaging
 %else
 BuildRequires:	rust-toolset
 BuildRequires:	rustfmt
-BuildRequires:	llvm
 %endif
 
 # Following dependencies only when not stictly using rust-packaging.
 %if 1
-BuildRequires:	clang-devel
+BuildRequires:	clang
 BuildRequires:	curl
 BuildRequires:	elfutils-libelf-devel
+BuildRequires:	jq
 BuildRequires:	libpcap-devel
+BuildRequires:	llvm
+BuildRequires:	make
 BuildRequires:	zlib-devel
 %endif
 
@@ -29,9 +31,9 @@ Tracing packets in the Linux networking stack, using eBPF and interfacing with c
 
 %prep
 %if 0%{?fedora} >= 34
-%autosetup -n %{name}-%{version}
+%autosetup -n %{name}-main
 %else
-%setup -q -n %{name}-%{version}
+%setup -q -n %{name}-main
 %endif
 %if 0
 %cargo_prep
@@ -74,18 +76,10 @@ RUSTUP_INIT_SKIP_PATH_CHECK=y curl --proto '=https' --tlsv1.2 -sSf https://sh.ru
 %endif
 
 %build
-%if 0%{?fedora}
-%cargo_build
-%else
-/usr/bin/env CARGO_HOME=.cargo /usr/bin/cargo build --release %{?_smp_mflags}
-%endif
+/usr/bin/env CARGO_HOME=.cargo make %{?_smp_mflags} release
 
 %install
-%if 0%{?fedora}
-%cargo_install
-%else
-/usr/bin/env CARGO_HOME=.cargo /usr/bin/cargo install %{?_smp_mflags} --no-track --path .
-%endif
+/usr/bin/env CARGO_HOME=.cargo CARGO_INSTALL_OPTS=--no-track make %{?_smp_mflags} install
 install -m 0755 -d %{buildroot}%{_sysconfdir}/retis/profiles
 install -m 0644 profiles/* %{buildroot}%{_sysconfdir}/retis/profiles
 
@@ -94,7 +88,7 @@ install -m 0644 profiles/* %{buildroot}%{_sysconfdir}/retis/profiles
 # Disable the testing part for now, should be reverted later.
 # Not a huge deal since we already test in our CI; but not perfect either.
 %if 0
-%cargo_test
+/usr/bin/env CARGO_HOME=.cargo make %{?_smp_mflags} test
 %endif
 
 %files
