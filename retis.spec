@@ -1,5 +1,5 @@
 Name:		retis
-Version:	1.3.2
+Version:	1.4.0
 Release:	0%{?dist}
 Summary:	Tracing packets in the Linux networking stack, using eBPF and interfacing with control and data paths such as OvS or Netfilter.
 License:	GPLv2
@@ -98,6 +98,14 @@ install -m 0644 profiles/* %{buildroot}%{_sysconfdir}/retis/profiles
 %{_sysconfdir}/retis/profiles
 
 %changelog
+* Wed Apr 24 2024 Antoine Tenart <atenart@redhat.com> - 1.4.0-0
+- Bump to 1.4.0.
+- Auto-completion.
+- Bitfield support in meta-filtering.
+- New inspect command.
+- Probe-stack mode.
+- Many other improvements.
+
 * Mon Mar 04 2024 Antoine Tenart <atenart@redhat.com> - 1.3.2-0
 - Bump to 1.3.1.
 - Wait for all probes to be installed before starting the collection.
