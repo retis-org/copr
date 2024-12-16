@@ -1,0 +1,10 @@
+--- retis-main/Makefile
++++ retis-main/Makefile
+@@ -21,6 +21,7 @@ s390x := s390
+ # Mappings takes precedence over custom ARCH
+ BPF_ARCH := $(if $($(ARCH)),$($(ARCH)),$(ARCH))
+ 
++CFLAGS := $(filter-out -mtls-dialect=gnu2,$(VAR))
+ BPF_CFLAGS := -target bpf \
+               -Wall \
+               -Wno-unused-value \
