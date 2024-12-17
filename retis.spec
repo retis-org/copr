@@ -1,11 +1,12 @@
 Name:		retis
-Version:	1.4.0
+Version:	1.5.0
 Release:	0%{?dist}
 Summary:	Tracing packets in the Linux networking stack, using eBPF and interfacing with control and data paths such as OvS or Netfilter.
 License:	GPLv2
 
 URL:		https://github.com/retis-org/retis
 Source:		https://github.com/retis-org/retis/archive/v%{version}/%{name}-%{version}.tar.gz
+Patch0:		mtls-dialect.diff
 
 %if 0%{?fedora} >= 34
 BuildRequires:	rust-packaging
@@ -15,7 +16,6 @@ BuildRequires:	rustfmt
 %endif
 
 # Following dependencies only when not stictly using rust-packaging.
-%if 1
 BuildRequires:	clang
 BuildRequires:	curl
 BuildRequires:	elfutils-libelf-devel
@@ -23,43 +23,24 @@ BuildRequires:	jq
 BuildRequires:	libpcap-devel
 BuildRequires:	llvm
 BuildRequires:	make
+BuildRequires:	python3-devel
 BuildRequires:	zlib-devel
-%endif
 
 %description
 Tracing packets in the Linux networking stack, using eBPF and interfacing with control and data paths such as OpenVSwitch.
 
 %prep
-%if 0%{?fedora} >= 34
-%autosetup -n %{name}-%{version}
-%else
-%setup -q -n %{name}-%{version}
-%endif
-%if 0
-%cargo_prep
-# Following dependencies only when not stictly using rust-packaging.
-%else
+%autosetup -n %{name}-%{version} -p1
 %{__mkdir} -p .cargo
 cat > .cargo/config << EOF
 [build]
 rustc = "$HOME/.cargo/bin/rustc"
 rustdoc = "$HOME/.cargo/bin/rustdoc"
 
-%if 0%{?fedora}
-[profile.rpm]
-inherits = "release"
-opt-level = %{rustflags_opt_level}
-codegen-units = %{rustflags_codegen_units}
-debug = %{rustflags_debuginfo}
+[profile.release]
+opt-level = 3
+debug = 2
 strip = "none"
-%else
-[profile.rpm]
-inherits = "release"
-opt-level = "%{rustflags_opt_level}"
-codegen-units = "%{rustflags_codegen_units}"
-debug = "%{rustflags_debuginfo}"
-strip = "none"
-%endif
 
 [env]
 CFLAGS = "%{build_cflags}"
@@ -73,15 +54,22 @@ root = "%{buildroot}%{_prefix}"
 verbose = true
 EOF
 RUSTUP_INIT_SKIP_PATH_CHECK=y curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -qy
-%endif
 
 %build
+%if 0%{?rhel} == 8
+/usr/bin/env CARGO_HOME=.cargo CARGO_CMD_OPTS="--no-default-features" make %{?_smp_mflags} release
+%else
 /usr/bin/env CARGO_HOME=.cargo make %{?_smp_mflags} release
+%endif
 
 %install
-/usr/bin/env CARGO_HOME=.cargo CARGO_INSTALL_OPTS=--no-track make %{?_smp_mflags} install
+%if 0%{?rhel} == 8
+/usr/bin/env CARGO_HOME=.cargo CARGO_INSTALL_OPTS="--no-track --no-default-features" CARGO_CMD_OPTS="--no-default-features" make %{?_smp_mflags} install
+%else
+/usr/bin/env CARGO_HOME=.cargo CARGO_INSTALL_OPTS="--no-track" make %{?_smp_mflags} install
+%endif
 install -m 0755 -d %{buildroot}%{_sysconfdir}/retis/profiles
-install -m 0644 profiles/* %{buildroot}%{_sysconfdir}/retis/profiles
+install -m 0644 retis/profiles/* %{buildroot}%{_sysconfdir}/retis/profiles
 
 %check
 # Build of the test binary fails for some reason on copr [E0786].
@@ -92,12 +80,19 @@ install -m 0644 profiles/* %{buildroot}%{_sysconfdir}/retis/profiles
 %endif
 
 %files
-%license LICENSE
+%license retis/LICENSE
 %doc README.md
 %{_bindir}/retis
 %{_sysconfdir}/retis/profiles
 
 %changelog
+* Wed Dec 18 2024 Antoine Tenart <atenart@redhat.com> - 1.5.0-0
+- Bump to 1.5.0.
+- Python bindings.
+- Improved meta-filtering.
+- ifdump profile.
+- Many other improvements.
+
 * Wed Apr 24 2024 Antoine Tenart <atenart@redhat.com> - 1.4.0-0
 - Bump to 1.4.0.
 - Auto-completion.
