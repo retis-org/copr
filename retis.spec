@@ -1,5 +1,5 @@
 Name:		retis
-Version:	1.5.1
+Version:	1.5.2
 Release:	0%{?dist}
 Summary:	Tracing packets in the Linux networking stack, using eBPF and interfacing with control and data paths such as OvS or Netfilter.
 License:	GPLv2
@@ -86,6 +86,11 @@ install -m 0644 retis/profiles/* %{buildroot}%{_sysconfdir}/retis/profiles
 %{_sysconfdir}/retis/profiles
 
 %changelog
+* Fri Mar 21 2025 Antoine Tenart <atenart@redhat.com> - 1.5.2-0
+- Bump to 1.5.2.
+- Fix conntrack zone id being truncated.
+- Fix 2 BPF verifier issues.
+
 * Mon Jan 27 2025 Antoine Tenart <atenart@redhat.com> - 1.5.1-0
 - Bump to 1.5.1.
 - Fixing segfaults when using UDST probes.
