@@ -1,12 +1,12 @@
 Name:		retis
-Version:	1.5.2
+Version:	1.6.0
 Release:	0%{?dist}
 Summary:	Tracing packets in the Linux networking stack, using eBPF and interfacing with control and data paths such as OvS or Netfilter.
 License:	GPLv2
 
 URL:		https://github.com/retis-org/retis
 Source:		https://github.com/retis-org/retis/archive/v%{version}/%{name}-%{version}.tar.gz
-Patch0:		mtls-dialect.diff
+Patch0:		retis-fixes.diff
 
 %if 0%{?fedora} >= 34
 BuildRequires:	rust-packaging
@@ -68,8 +68,8 @@ RUSTUP_INIT_SKIP_PATH_CHECK=y curl --proto '=https' --tlsv1.2 -sSf https://sh.ru
 %else
 /usr/bin/env CARGO_HOME=.cargo CARGO_INSTALL_OPTS="--no-track" make %{?_smp_mflags} install
 %endif
-install -m 0755 -d %{buildroot}%{_sysconfdir}/retis/profiles
-install -m 0644 retis/profiles/* %{buildroot}%{_sysconfdir}/retis/profiles
+install -m 0755 -d %{buildroot}%{_datadir}/retis/profiles
+install -m 0644 retis/profiles/* %{buildroot}%{_datadir}/retis/profiles
 
 %check
 # Build of the test binary fails for some reason on copr [E0786].
@@ -83,9 +83,12 @@ install -m 0644 retis/profiles/* %{buildroot}%{_sysconfdir}/retis/profiles
 %license retis/LICENSE
 %doc README.md
 %{_bindir}/retis
-%{_sysconfdir}/retis/profiles
+%{_datadir}/retis/profiles
 
 %changelog
+* Wed Aug 20 2025 Antoine Tenart <atenart@redhat.com> - 1.6.0-0
+- Bump to 1.6.0.
+
 * Fri Mar 21 2025 Antoine Tenart <atenart@redhat.com> - 1.5.2-0
 - Bump to 1.5.2.
 - Fix conntrack zone id being truncated.
