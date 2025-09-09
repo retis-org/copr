@@ -1,0 +1,10 @@
+--- a/Makefile
++++ b/Makefile
+@@ -30,6 +30,7 @@ BPF_CFLAGS := -target bpf \
+               -Wno-pointer-sign \
+               -Wno-compare-distinct-pointer-types \
+               -Wno-unused-command-line-argument \
++              -Wno-default-const-init-var-unsafe -Wno-unknown-warning-option \
+               $(BPF_CFLAGS_PAHOLE) \
+               -fno-stack-protector \
+               -D__TARGET_ARCH_$(BPF_ARCH) \
