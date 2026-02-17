@@ -1,5 +1,5 @@
 Name:		retis
-Version:	1.6.3
+Version:	1.6.4
 Release:	0%{?dist}
 Summary:	Tracing packets in the Linux networking stack, using eBPF and interfacing with control and data paths such as OvS or Netfilter.
 License:	GPLv2
@@ -87,6 +87,9 @@ install -m 0644 retis/profiles/* %{buildroot}%{_datadir}/retis/profiles
 %{_datadir}/retis/profiles
 
 %changelog
+* Tue Feb 17 2026 Antoine Tenart <atenart@redhat.com> - 1.6.4-0
+- Bump to 1.6.4.
+
 * Tue Oct 07 2025 Antoine Tenart <atenart@redhat.com> - 1.6.3-0
 - Bump to 1.6.3.
 
