@@ -1,5 +1,5 @@
 Name:		retis
-Version:	1.6.4
+Version:	1.7.0
 Release:	0%{?dist}
 Summary:	Tracing packets in the Linux networking stack, using eBPF and interfacing with control and data paths such as OvS or Netfilter.
 License:	GPLv2
@@ -9,14 +9,8 @@ Source:		https://github.com/retis-org/retis/archive/v%{version}/%{name}-%{versio
 Patch0:		retis-fixes.diff
 Patch1:		retis-rawhide-bpf.diff
 
-%if 0%{?fedora} >= 34
-BuildRequires:	rust-packaging
-%else
-BuildRequires:	rust-toolset
-BuildRequires:	rustfmt
-%endif
+%global rustup_env source $HOME/.cargo/env
 
-# Following dependencies only when not stictly using rust-packaging.
 BuildRequires:	clang
 BuildRequires:	curl
 BuildRequires:	elfutils-libelf-devel
@@ -33,11 +27,7 @@ Tracing packets in the Linux networking stack, using eBPF and interfacing with c
 %prep
 %autosetup -n %{name}-%{version} -p1
 %{__mkdir} -p .cargo
-cat > .cargo/config << EOF
-[build]
-rustc = "$HOME/.cargo/bin/rustc"
-rustdoc = "$HOME/.cargo/bin/rustdoc"
-
+cat > .cargo/config.toml << EOF
 [profile.release]
 opt-level = 3
 debug = 2
@@ -55,8 +45,12 @@ root = "%{buildroot}%{_prefix}"
 verbose = true
 EOF
 RUSTUP_INIT_SKIP_PATH_CHECK=y curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -qy
+# Pre-install rust-src: cc >= 1.4.0 invokes rustc via the rustup shim,
+# causing parallel build.rs scripts to race on the component download.
+$HOME/.cargo/bin/rustup component add rust-src
 
 %build
+%{rustup_env}
 %if 0%{?rhel} == 8
 /usr/bin/env CARGO_HOME=.cargo CARGO_CMD_OPTS="--no-default-features" make %{?_smp_mflags} release
 %else
@@ -64,6 +58,7 @@ RUSTUP_INIT_SKIP_PATH_CHECK=y curl --proto '=https' --tlsv1.2 -sSf https://sh.ru
 %endif
 
 %install
+%{rustup_env}
 %if 0%{?rhel} == 8
 /usr/bin/env CARGO_HOME=.cargo CARGO_INSTALL_OPTS="--no-track --no-default-features" CARGO_CMD_OPTS="--no-default-features" make %{?_smp_mflags} install
 %else
@@ -73,6 +68,7 @@ install -m 0755 -d %{buildroot}%{_datadir}/retis/profiles
 install -m 0644 retis/profiles/* %{buildroot}%{_datadir}/retis/profiles
 
 %check
+%{rustup_env}
 # Build of the test binary fails for some reason on copr [E0786].
 # Disable the testing part for now, should be reverted later.
 # Not a huge deal since we already test in our CI; but not perfect either.
@@ -87,6 +83,14 @@ install -m 0644 retis/profiles/* %{buildroot}%{_datadir}/retis/profiles
 %{_datadir}/retis/profiles
 
 %changelog
+* Mon Aug 10 2026 Paolo Valerio <pvalerio@redhat.com> - 1.7.0-0
+- Bump to 1.7.0.
+- Fix patch context for retis-fixes.diff and retis-rawhide-bpf.diff.
+- Pre-install rust-src to avoid a rustup race condition with cc >= 1.4.0 in parallel builds.
+- Rename .cargo/config to .cargo/config.toml to silence deprecation warning.
+- Fix c8s build by using rustup consistently for cargo/rustc/rustdoc
+  via source $HOME/.cargo/env.
+
 * Tue Feb 17 2026 Antoine Tenart <atenart@redhat.com> - 1.6.4-0
 - Bump to 1.6.4.
 
