@@ -12,8 +12,7 @@ diff --git a/retis-events/Cargo.toml b/retis-events/Cargo.toml
 index a990ac58be14..19468706f9de 100644
 --- a/retis-events/Cargo.toml
 +++ b/retis-events/Cargo.toml
-@@ -6,6 +6,9 @@ repository.workspace = true
- homepage.workspace = true
+@@ -6,5 +6,8 @@ repository.workspace = true
  edition.workspace = true
  
 +[lints.rust]
